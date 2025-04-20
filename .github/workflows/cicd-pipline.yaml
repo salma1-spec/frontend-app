@@ -3,7 +3,7 @@ name: Pipeline CI/CD frontend-app
 env:
   BUILD_NUMBER: ${{ github.run_number }}
   IMAGE_NAME: frontend-app
-  VITE_API_URL: https://api.lebondeveloppeur.net
+  VITE_API_URL: https://api.36.lebondeveloppeur.net
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone Source Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4git 
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
