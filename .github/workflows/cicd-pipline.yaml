@@ -2,7 +2,7 @@ name: Pipeline CI/CD frontend-app
 
 env:
   BUILD_NUMBER: ${{ github.run_number }}
-  IMAGE_NAME: frontend-app
+  IMAGE_NAME: frontend-image
   VITE_API_URL: https://api.36.lebondeveloppeur.net
 
 on:
