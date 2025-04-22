@@ -20,4 +20,4 @@ networks:
     driver: bridge  # Use bridge networking for container communication
 
 # Manual build command (for reference):
-# docker build -t assidiwassimdev/frontend-app:latest --build-arg API_URL=https://api.lebondeveloppeur.net/api .
+# docker build -t salma5/frontend-app:latest --build-arg API_URL=https://api.lebondeveloppeur.net/api .
