@@ -17,3 +17,4 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONARQUBE_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+          SONARQUBE_HOST_URL: ${{ secrets.SONAR_HOST_URL }} 
