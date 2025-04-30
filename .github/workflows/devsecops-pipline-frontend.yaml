@@ -1,5 +1,5 @@
 name: DevSecOps Pipeline Frontend-app
-  
+
 env:
   BUILD_NUMBER: ${{ github.run_number }}
   IMAGE_NAME: frontend-image
