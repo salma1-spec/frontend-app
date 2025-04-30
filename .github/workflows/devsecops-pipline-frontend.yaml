@@ -130,12 +130,11 @@ jobs:
               sudo docker-compose pull
               sudo docker-compose up -d --force-recreate --remove-orphans
               
-    dast-scan:
+  dast-scan:
     runs-on: ubuntu-latest
     permissions:
       security-events: write
       actions: write
-      
     steps:
       - uses: actions/checkout@v4
 
