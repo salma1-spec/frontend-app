@@ -48,23 +48,27 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
   sca-scan:
-    runs-on: ubuntu-latest
-    needs: test-job
-    steps:
-      - name: Run OWASP Dependency-Check
-        uses: dependency-check/Dependency-Check_Action@main
-        with:
-          project: "frontend-app"
-          path: "."
-          format: "ALL"
-          out: "reports"
-          args: "--noupdate"
+  runs-on: ubuntu-latest
+  needs: test-job
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Upload dependency-check report
-        uses: actions/upload-artifact@v4
-        with:
-          name: dependency-check-report
-          path: reports/dependency-check-report.html
+    - name: Run OWASP Dependency-Check
+      uses: dependency-check/Dependency-Check_Action@main
+      with:
+        project: "frontend-app"
+        path: "frontend-app"
+        format: "ALL"
+        out: "reports"
+        args: "--scan ./frontend-app"
+
+    - name: Upload dependency-check report
+      uses: actions/upload-artifact@v4
+      with:
+        name: dependency-check-report
+        path: reports/*
+
 
   docker-image-scan:
     runs-on: ubuntu-latest
