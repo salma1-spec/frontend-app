@@ -56,7 +56,7 @@ jobs:
         with:
           project: "frontend-app"
           path: "."
-          format: "HTML"
+          format: "ALL"
           out: "reports"
           args: "--noupdate"
 
