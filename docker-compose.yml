@@ -1,5 +1,4 @@
 name: frontend-app-stack
-
 # Define services
 services:
   frontend-app:
@@ -13,11 +12,24 @@ services:
       - '3000:80'  # Map port 3000 on the host to port 80 in the container
     networks:
       - frontend-app-network  # Connect to the defined network
-
 # Define networks
 networks:
   frontend-app-network:
     driver: bridge  # Use bridge networking for container communication
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Manual build command (for reference):
 # docker build -t salma5/frontend-app:latest --build-arg API_URL=https://api.lebondeveloppeur.net/api .

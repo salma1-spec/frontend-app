@@ -41,7 +41,7 @@ const Navbar = () => {
 					bgGradient={"linear(to-r, cyan.400, blue.500)"}
 					bgClip={"text"}
 				>
-					<Link to={"/"}>  Store🛒</Link>
+					<Link to={"/"}>  Store salma🛒</Link>
 				</Text>
 
 
