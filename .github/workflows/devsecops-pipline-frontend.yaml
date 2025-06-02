@@ -144,7 +144,10 @@ jobs:
 
       - name: Run OWASP ZAP DAST scan
         run: |
-          docker run --network="host" -v $(pwd):/zap/wrk/:rw -t ghcr.io/zaproxy/zap-stable zap-baseline.py -t http://localhost:3000 -r zap-report.html
+         docker run --network="host" \
+         -v $(pwd):/zap/wrk/:rw \
+         -t ghcr.io/zaproxy/zap-stable:2.14.0 \
+         zap-baseline.py -t http://localhost:3000 -r zap-report.html
 
 
       - name: Upload ZAP report
