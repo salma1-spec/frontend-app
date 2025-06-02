@@ -36,11 +36,17 @@ jobs:
         uses: returntocorp/semgrep-action@v1
         with:
           config: "p/default"
-      - name: Run SonarQube
+      - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v5
-        env:
-         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+        args: >
+         -Dsonar.projectKey=salma1-spec_frontend-app
+         -Dsonar.organization=salma1-spec
+         -Dsonar.sources=src
+  env:
+    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    SONAR_HOST_URL: https://sonarcloud.io
+
 
   snyk-sca-scan:
     runs-on: ubuntu-latest
