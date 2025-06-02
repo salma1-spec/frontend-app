@@ -24,10 +24,12 @@ jobs:
 
       - name: Run unit tests
         run: npm test
-
   sast-scan:
     runs-on: ubuntu-latest
     needs: test-job
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: https://sonarcloud.io
     steps:
       - name: Clone Source Code
         uses: actions/checkout@v4
@@ -36,16 +38,16 @@ jobs:
         uses: returntocorp/semgrep-action@v1
         with:
           config: "p/default"
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v5
         with:
-        args: >
-         -Dsonar.projectKey=salma1-spec_frontend-app
-         -Dsonar.organization=salma1-spec
-         -Dsonar.sources=src
-  env:
-    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    SONAR_HOST_URL: https://sonarcloud.io
+          args: >
+            -Dsonar.projectKey=salma1-spec_frontend-app
+            -Dsonar.organization=salma1-spec
+            -Dsonar.sources=src
+            -Dsonar.branch.name=main
+
 
 
   snyk-sca-scan:
