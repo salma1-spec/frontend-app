@@ -36,17 +36,11 @@ jobs:
         uses: returntocorp/semgrep-action@v1
         with:
           config: "p/default"
-      - name: SonarQube
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v4
-            with:
-              fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-          - name: SonarQube Scan
-            uses: SonarSource/sonarqube-scan-action@v5
-            env:
-              SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
+      - name: Run SonarQube
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
   snyk-sca-scan:
     runs-on: ubuntu-latest
