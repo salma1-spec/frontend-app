@@ -126,48 +126,28 @@ jobs:
         run: docker tag ${{ env.IMAGE_NAME }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Push Docker Image with Latest Version
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest 
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
 
-  dast-zap:
+  scanner-lynis:
     runs-on: ubuntu-latest
     needs: build-and-push-job
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
-      - name: Checkout code
+      - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: Create Docker network
-        run: docker network create zapnet
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Pull frontend image
-        run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-
-      - name: Run frontend app container
+      - name: Install Lynis
         run: |
-          docker run -d --rm --name frontend-app \
-            --network zapnet \
-            -p 3000:3000 \
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-          sleep 10
+          sudo apt-get update
+          sudo apt-get install -y lynis
 
-      - name: Run ZAP DAST scan
+      - name: Run Lynis security audit
         run: |
-          mkdir -p zap-output
-          chmod -R 777 zap-output
-          docker run --rm \
-            --network zapnet \
-            -v $(pwd)/zap-output:/zap/wrk \
-            ghcr.io/zaproxy/zaproxy:stable \
-            zap-baseline.py -t http://frontend-app:3000 -r zap-report.html
+          mkdir -p lynis-report
+          sudo lynis audit system --quiet --logfile lynis-report/lynis.log --report-file lynis-report/report.dat
 
-      - name: Upload ZAP report
+      - name: Upload Lynis report
         uses: actions/upload-artifact@v4
         with:
-          name: zap-report
-          path: zap-output/zap-report.html
+          name: lynis-report
+          path: lynis-report/
