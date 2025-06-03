@@ -128,6 +128,7 @@ jobs:
       - name: Push Docker Image with Latest Version
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
 
+  
   scanner-lynis:
     runs-on: ubuntu-latest
     needs: build-and-push-job
@@ -145,7 +146,8 @@ jobs:
         run: |
           mkdir -p lynis-report
           sudo lynis audit system --quiet --logfile lynis-report/lynis.log --report-file lynis-report/report.dat
-
+      - name: Fix permissions for lynis report
+        run: chmod -R 777 ./lynis-report
       - name: Upload Lynis report
         uses: actions/upload-artifact@v4
         with:
