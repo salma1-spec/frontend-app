@@ -130,7 +130,7 @@ jobs:
  
 
 
-  zzap_scan:
+  zap_scan:
   runs-on: ubuntu-latest
   needs: build-and-push-job
   steps:
