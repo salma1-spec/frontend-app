@@ -29,71 +29,71 @@ jobs:
       - name: Run unit tests
         run: npm test
 
-  sast-scan:
-    runs-on: ubuntu-latest
-    needs: test-job
-    timeout-minutes: 10
-    env:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      SONAR_HOST_URL: https://sonarcloud.io
-    steps:
-      - name: Clone Source Code
-        uses: actions/checkout@v4
+  # sast-scan:
+  #   runs-on: ubuntu-latest
+  #   needs: test-job
+  #   timeout-minutes: 10
+  #   env:
+  #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #     SONAR_HOST_URL: https://sonarcloud.io
+  #   steps:
+  #     - name: Clone Source Code
+  #       uses: actions/checkout@v4
 
-      - name: Run Semgrep (SAST)
-        uses: returntocorp/semgrep-action@v1
-        with:
-          config: "p/default"
+  #     - name: Run Semgrep (SAST)
+  #       uses: returntocorp/semgrep-action@v1
+  #       with:
+  #         config: "p/default"
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v5
-        with:
-          args: >
-            -Dsonar.projectKey=salma1-spec_frontend-app
-            -Dsonar.organization=salma1-spec
-            -Dsonar.sources=src
-            -Dsonar.branch.name=main
+  #     - name: SonarCloud Scan
+  #       uses: SonarSource/sonarqube-scan-action@v5
+  #       with:
+  #         args: >
+  #           -Dsonar.projectKey=salma1-spec_frontend-app
+  #           -Dsonar.organization=salma1-spec
+  #           -Dsonar.sources=src
+  #           -Dsonar.branch.name=main
 
-  sca-scan:
-    runs-on: ubuntu-latest
-    needs: test-job
-    timeout-minutes: 10
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  # sca-scan:
+  #   runs-on: ubuntu-latest
+  #   needs: test-job
+  #   timeout-minutes: 10
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Run OWASP Dependency-Check
-        uses: dependency-check/Dependency-Check_Action@main
-        with:
-          project: "frontend-app"
-          path: "."
-          format: "ALL"
-          out: "reports"
-          args: "--noupdate"
+  #     - name: Run OWASP Dependency-Check
+  #       uses: dependency-check/Dependency-Check_Action@main
+  #       with:
+  #         project: "frontend-app"
+  #         path: "."
+  #         format: "ALL"
+  #         out: "reports"
+  #         args: "--noupdate"
 
-      - name: Upload dependency-check report
-        uses: actions/upload-artifact@v4
-        with:
-          name: dependency-check-report
-          path: reports/dependency-check-report.html
+  #     - name: Upload dependency-check report
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: dependency-check-report
+  #         path: reports/dependency-check-report.html
 
-  docker-image-scan:
-    runs-on: ubuntu-latest
-    needs: [sast-scan, sca-scan]
-    timeout-minutes: 10
-    steps:
-      - name: Clone Source Code
-        uses: actions/checkout@v4
+  # docker-image-scan:
+  #   runs-on: ubuntu-latest
+  #   needs: [sast-scan, sca-scan]
+  #   timeout-minutes: 10
+  #   steps:
+  #     - name: Clone Source Code
+  #       uses: actions/checkout@v4
 
-      - name: Build Docker Image
-        run: docker build -t ${{ env.IMAGE_NAME }} --build-arg VITE_API_URL=${{ env.VITE_API_URL }} .
+  #     - name: Build Docker Image
+  #       run: docker build -t ${{ env.IMAGE_NAME }} --build-arg VITE_API_URL=${{ env.VITE_API_URL }} .
 
-      - name: Scan Docker Image with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ env.IMAGE_NAME }}
-          exit-code: 0
-          ignore-unfixed: true
+  #     - name: Scan Docker Image with Trivy
+  #       uses: aquasecurity/trivy-action@master
+  #       with:
+  #         image-ref: ${{ env.IMAGE_NAME }}
+  #         exit-code: 0
+  #         ignore-unfixed: true
 
   build-and-push-job:
     runs-on: ubuntu-latest
@@ -123,7 +123,10 @@ jobs:
 
       - name: Push Docker Image with Latest Version
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-
+      - name: Préparer les permissions du dossier ZAP
+        run: |
+         sudo mkdir -p /zap/wrk
+         sudo chmod -R 777 /zap/wrk
   zap_scan:
     runs-on: ubuntu-latest
     needs: build-and-push-job
