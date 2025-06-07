@@ -1,39 +1,39 @@
-# Workflow for provisioning the VPS when changes are pushed to the 'main' branch
-name: VPS Provision Pipeline
+# # Workflow for provisioning the VPS when changes are pushed to the 'main' branch
+# name: VPS Provision Pipeline
 
-on:
-  push:
-    branches:
-      - main  # Trigger on push to the 'main' branch
+# on:
+#   push:
+#     branches:
+#       - main  # Trigger on push to the 'main' branch
 
-jobs:
-  provision-vps-job:
-    runs-on: ubuntu-latest  # Use the latest Ubuntu runner for the job
+# jobs:
+#   provision-vps-job:
+#     runs-on: ubuntu-latest  # Use the latest Ubuntu runner for the job
 
-    steps:
-      # Step 1: Checkout the code from the repository
-      - name: Checkout Code
-        uses: actions/checkout@v4
+#     steps:
+#       # Step 1: Checkout the code from the repository
+#       - name: Checkout Code
+#         uses: actions/checkout@v4
 
-      # Step 2: Install Ansible and Docker Python dependencies
-      - name: Install Ansible & Docker Python dependencies
-        run: |
-          sudo apt update                    # Update package list
-          sudo apt install -y python3-pip     # Install pip3
-          pip3 install ansible docker         # Install Ansible and Docker packages
+#       # Step 2: Install Ansible and Docker Python dependencies
+#       - name: Install Ansible & Docker Python dependencies
+#         run: |
+#           sudo apt update                    # Update package list
+#           sudo apt install -y python3-pip     # Install pip3
+#           pip3 install ansible docker         # Install Ansible and Docker packages
 
-      # Step 3: Install necessary Ansible collections for Docker
-      - name: Install Ansible collections
-        run: |
-          ansible-galaxy collection install community.docker  # Install community.docker collection
+#       # Step 3: Install necessary Ansible collections for Docker
+#       - name: Install Ansible collections
+#         run: |
+#           ansible-galaxy collection install community.docker  # Install community.docker collection
 
-      # Step 4: Run the Ansible Playbook to provision the VPS
-      - name: Run Ansible Playbook
-        uses: dawidd6/action-ansible-playbook@v2  # Action to run the playbook
-        with:
-          playbook: provision/playbook.yml               # Path to the playbook
-          inventory: "${{ secrets.VPS_HOST }}"          # VPS host address from secrets
-          options: >
-            --extra-vars "ansible_user=${{ secrets.VPS_USERNAME }} ansible_password=${{ secrets.VPS_PASSWORD }} ansible_become=yes ansible_python_interpreter=/usr/bin/python3.12"
-        env:
-          ANSIBLE_HOST_KEY_CHECKING: 'false'  # Disable host key checking
+#       # Step 4: Run the Ansible Playbook to provision the VPS
+#       - name: Run Ansible Playbook
+#         uses: dawidd6/action-ansible-playbook@v2  # Action to run the playbook
+#         with:
+#           playbook: provision/playbook.yml               # Path to the playbook
+#           inventory: "${{ secrets.VPS_HOST }}"          # VPS host address from secrets
+#           options: >
+#             --extra-vars "ansible_user=${{ secrets.VPS_USERNAME }} ansible_password=${{ secrets.VPS_PASSWORD }} ansible_become=yes ansible_python_interpreter=/usr/bin/python3.12"
+#         env:
+#           ANSIBLE_HOST_KEY_CHECKING: 'false'  # Disable host key checking

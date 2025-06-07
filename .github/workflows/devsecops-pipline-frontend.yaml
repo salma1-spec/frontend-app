@@ -127,15 +127,12 @@ jobs:
 
       - name: Push Docker Image with Latest Version
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-  permissions:
-  contents: read
-  actions: write
-  security-events: write
+ 
 
-  jobs:
-  zap_scan:
+    zap_scan:
     name: Run OWASP ZAP DAST
     runs-on: ubuntu-latest
+    needs: build-and-push-job
 
     steps:
       - name: ZAP Scan - Render App
@@ -143,14 +140,15 @@ jobs:
         with:
           target: 'https://salma-store.onrender.com'
           format: 'HTML'
-          cmd_options: '-a -r report.html'  # Ensure report generation
-          fail_action: false  # Do not fail the job if vulnerabilities are found
+          cmd_options: '-a -r report.html'
+          fail_action: false
 
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
         with:
           name: ZAP Security Report
           path: report.html
+
   
 
   # notify:
