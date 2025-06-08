@@ -124,25 +124,37 @@ jobs:
       - name: Push Docker Image with Latest Version
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
 
-  Zap scan:
-       zap-scan:
-        runs-on: ubuntu-latest
-        needs: build-and-push-job
-        steps:
-          - name: Run ZAP Scan
-            run: |
-              zap.sh -cmd -quickurl https://salma-store.onrender.com -quickout zap-report.html
-      
-          - name: Upload ZAP Report
-            uses: actions/upload-artifact@v4
-            with:
-              name: zap-report
-              path: zap-report.html     - name: Run ZAP Scan
-              run: |
-               zap.sh -cmd -quickurl https://salma-store.onrender.com -quickout zap-report.html
+  snyk-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Snyk
+        run: npm install -g snyk
+      - name: Run Snyk to check vulnerabilities
+        run: snyk test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-          - name: Upload ZAP Report
-            uses: actions/upload-artifact@v4
-            with:
-            name: zap-report
-            path: zap-report.html
+
+  # Zap scan:
+  #      zap-scan:
+  #       runs-on: ubuntu-latest
+  #       needs: build-and-push-job
+  #       steps:
+  #         - name: Run ZAP Scan
+  #           run: |
+  #             zap.sh -cmd -quickurl https://salma-store.onrender.com -quickout zap-report.html
+      
+  #         - name: Upload ZAP Report
+  #           uses: actions/upload-artifact@v4
+  #           with:
+  #             name: zap-report
+  #             path: zap-report.html     - name: Run ZAP Scan
+  #             run: |
+  #              zap.sh -cmd -quickurl https://salma-store.onrender.com -quickout zap-report.html
+
+  #         - name: Upload ZAP Report
+  #           uses: actions/upload-artifact@v4
+  #           with:
+  #           name: zap-report
+  #           path: zap-report.html
