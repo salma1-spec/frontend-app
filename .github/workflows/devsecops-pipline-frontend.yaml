@@ -76,6 +76,17 @@ jobs:
   #       with:
   #         name: dependency-check-report
   #         path: reports/dependency-check-report.html
+  snyk-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Snyk
+        run: npm install -g snyk
+      - name: Run Snyk to check vulnerabilities
+        run: snyk test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          continue-on-error: true
 
   docker-image-scan:
     runs-on: ubuntu-latest
@@ -123,23 +134,7 @@ jobs:
 
       - name: Push Docker Image with Latest Version
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-
-  snyk-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Snyk
-        run: npm install -g snyk
-      - name: Run Snyk to check vulnerabilities
-        run: snyk test
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-          continue-on-error: true
-
-      
-
-
-
+        
   # Zap scan:
   #      zap-scan:
   #       runs-on: ubuntu-latest
