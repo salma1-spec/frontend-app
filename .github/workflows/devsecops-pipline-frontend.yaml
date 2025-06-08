@@ -138,11 +138,11 @@ jobs:
             with:
               name: zap-report
               path: zap-report.html     - name: Run ZAP Scan
-        run: |
-         zap.sh -cmd -quickurl https://salma-store.onrender.com -quickout zap-report.html
+              run: |
+               zap.sh -cmd -quickurl https://salma-store.onrender.com -quickout zap-report.html
 
-      - name: Upload ZAP Report
-        uses: actions/upload-artifact@v4
-        with:
-        name: zap-report
-        path: zap-report.html
+          - name: Upload ZAP Report
+            uses: actions/upload-artifact@v4
+            with:
+            name: zap-report
+            path: zap-report.html
