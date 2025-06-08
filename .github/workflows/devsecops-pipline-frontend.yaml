@@ -134,9 +134,9 @@ jobs:
         run: snyk test
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      - name: Run Snyk with continue-on-error
-        run: snyk test
-        continue-on-error: true
+          continue-on-error: true
+
+      
 
 
 
