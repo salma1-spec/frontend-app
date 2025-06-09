@@ -133,34 +133,41 @@ jobs:
         run: docker tag ${{ env.IMAGE_NAME }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
       - name: Push Docker Image with Latest Version
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-
   zap_scan:
     runs-on: ubuntu-latest
 
+    services:
+      frontend:
+        image: node:20
+        ports:
+          - 3000:3000
+        options: >-
+          --health-cmd="curl --fail http://localhost:3000 || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+        volumes:
+          - ./:/app
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "18"
+      - name: Wait for the frontend to be healthy
+        run: sleep 30
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build frontend
-        run: npm run build
-
-      - name: Start frontend app
-        run: |
-          npm run preview &    # utilise vite preview
-          sleep 15             # attendre que le serveur démarre
-
-      - name: Run ZAP Baseline Scan
+      - name: Run ZAP scan
         uses: zaproxy/action-baseline@v0.10.0
         with:
-          target: "http://localhost:3000"
+          target: http://localhost:3000
+
+      - name: Upload ZAP report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-report
+          path: |
+            report_html.html
+            report_json.json
+            report_md.md
 
   # Zap scan:
   #      zap-scan:
