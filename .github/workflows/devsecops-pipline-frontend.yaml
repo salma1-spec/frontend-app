@@ -139,7 +139,7 @@ jobs:
     needs: build-and-push-job
     steps:
       - name: Checkout code
-        uses: actions/checkout@v
+        uses: actions/checkout@v4
       - name: Run OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.10.0
         with:
