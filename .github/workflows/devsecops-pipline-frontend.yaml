@@ -134,7 +134,26 @@ jobs:
 
       - name: Push Docker Image with Latest Version
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-        
+
+  zap-dast:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Start the app (optional: if needed for local test)
+        run: |
+          docker-compose up -d
+          sleep 15  # temps pour laisser démarrer l'app
+
+      - name: Run OWASP ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.10.0
+        with:
+          target: 'http://localhost:3000'
+          cmd_options: '-a'  # Active scan
+
+
   # Zap scan:
   #      zap-scan:
   #       runs-on: ubuntu-latest
