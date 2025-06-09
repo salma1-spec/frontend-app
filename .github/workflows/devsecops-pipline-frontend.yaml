@@ -21,7 +21,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Install dependencies
         run: npm install --force
@@ -111,7 +111,7 @@ jobs:
     needs: docker-image-scan
     timeout-minutes: 10
     steps:
-      - name: Clone Source Code 
+      - name: Clone Source Code
         uses: actions/checkout@v4
 
       - name: Build Docker Image
@@ -131,23 +131,20 @@ jobs:
 
       - name: Tag Docker Image with Latest Version
         run: docker tag ${{ env.IMAGE_NAME }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-
       - name: Push Docker Image with Latest Version
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
 
-    zap-dast:
+  zap-dast:
     runs-on: ubuntu-latest
     needs: build-and-push-job
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-
-
+        uses: actions/checkout@v
       - name: Run OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.10.0
         with:
-          target: 'http://localhost:3000'
-          cmd_options: '-a'  # Active scan
+          target: "http://localhost:3000"
+          cmd_options: "-a" # Active scan option
 
 
   # Zap scan:
@@ -158,7 +155,7 @@ jobs:
   #         - name: Run ZAP Scan
   #           run: |
   #             zap.sh -cmd -quickurl https://salma-store.onrender.com -quickout zap-report.html
-      
+
   #         - name: Upload ZAP Report
   #           uses: actions/upload-artifact@v4
   #           with:
